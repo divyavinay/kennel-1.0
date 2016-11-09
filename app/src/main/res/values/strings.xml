@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Kennel</string>
+    <string name="NewUserText">Sign up!</string>
+    <string name="LogIn">Log in</string>
+    <string name="Close">X</string>
+    <string name="SigninDetails">Enter your email.</string>
+    <string name="FirstName">First Name</string>
+    <string name="LastName">Last Name</string>
+    <string name="PersonalDetails">Enter your details.</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="PendingReservations">Pending Reservations</string>
+    <string name="PastReservation">Past Reservations</string>
+
+    <!-- TODO: Pet Profile Fragment -->
+    <string name="PetProfile">Pet Profile</string>
+    <string name="DogSize1">Small</string>
+    <string name="DogSize2">Medium</string>
+    <string name="DogSize3">Large</string>
+    <string name="Alpha">Alpha Dog</string>
+    <string name="OtherDogs">Good with other dogs</string>
+    <string name="PottyTrained">Potty Trained</string>
+    <string name="Active">Active.Needs alot of exersice</string>
+    <string name="NotActive">Not Active</string>
+    <string name="Kids">Good with kids</string>
+    <string name="About">Write a few lins about your pet</string>
+    <string name="SaveProfile">Save</string>
+
+    <!-- TODO: Search Fragent -->
+    <string name="FromDate">Check In</string>
+    <string name="ToDate">Check out</string>
+    <string name="where">Where?</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

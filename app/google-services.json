@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "432062639222",
+    "project_id": "firebase-kennel"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:432062639222:android:fcaba4870ad81716",
+        "android_client_info": {
+          "package_name": "com.bignerdranch.android.kennel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "432062639222-pthg8htcftpck4f4p0ps598nm8bb83q6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bignerdranch.android.kennel",
+            "certificate_hash": "66C4C8D0D027D3A91FC9F9B0636C88CF43BE4B9A"
+          }
+        },
+        {
+          "client_id": "432062639222-su1d2u4l6o12s7f75k3ue46ufikjr9lu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-YQSnofL-qQfS010xjuVGU8KY6r1j81s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

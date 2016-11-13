@@ -12,12 +12,11 @@
             android:title="Trips"/>
         <item
             android:id="@+id/nav_PetProfile"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@mipmap/ic_pet_launcher"
             android:title="Pet Profile"/>
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools"/>
+            android:id="@+id/log_out"
+            android:title="Log Out"/>
     </group>
 
 

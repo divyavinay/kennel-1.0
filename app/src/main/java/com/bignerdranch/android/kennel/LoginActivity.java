@@ -1,6 +1,8 @@
 package com.bignerdranch.android.kennel;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -38,8 +40,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private int RC_Signin = 100;
 
     //TextViews
-    private TextView mTextViewName;
-    private TextView mTextViewEmail;
+    private String mTextViewName;
+    private String mTextViewEmail;
     private NetworkImageView mProfileImage;
 
     //Image Loader
@@ -54,6 +56,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //
     private Button mSignin;
 
+    //Shared prefernce file name
+    public static final String LOGIN_DETAILS = "loginDetails";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +67,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
         //Initializing views
-        mTextViewName = (TextView) findViewById(R.id.textViewName);
-        mTextViewEmail = (TextView) findViewById(R.id.textViewEmail);
-        mProfileImage = (NetworkImageView) findViewById(R.id.profileImage);
+//        mTextViewName = (TextView) findViewById(R.id.textViewName);
+//        mTextViewEmail = (TextView) findViewById(R.id.textViewEmail);
+//        mProfileImage = (NetworkImageView) findViewById(R.id.profileImage);
 
         //Initializing google sign in
         mGoogleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -124,23 +130,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(result.isSuccess()) {
             // getting account details
             GoogleSignInAccount acct = result.getSignInAccount();
+            mTextViewName = acct.getDisplayName();
+            mTextViewEmail = acct.getEmail();
+            SharedPreferences settings =getApplicationContext().getSharedPreferences(LOGIN_DETAILS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("display_name",mTextViewName);
+            editor.putString("display_email",mTextViewEmail);
+            editor.commit();
 
-            //display name and email
-            mTextViewName.setText(acct.getDisplayName());
-            mTextViewEmail.setText(acct.getEmail());
-
-            //Initializing image loader
-            mImageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())
-                    .getImageLoader();
-
-            if (acct.getPhotoUrl()!=null) {
-                mImageLoader.get(acct.getPhotoUrl().toString(), ImageLoader.getImageListener(mProfileImage,
-                        R.mipmap.ic_launcher,
-                        R.mipmap.ic_launcher));
-
-                //Loading image
-                mProfileImage.setImageUrl(acct.getPhotoUrl().toString(), mImageLoader);
-            }
+            Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
+            startActivity(intent);
+            finish();
 
         }
         else {

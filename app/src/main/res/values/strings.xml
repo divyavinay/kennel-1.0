@@ -31,6 +31,7 @@
     <string name="Kids">Good with kids</string>
     <string name="About">Write a few lins about your pet</string>
     <string name="SaveProfile">Save</string>
+    <string name="petSize">Choose the size of your pet.</string>
 
     <!-- TODO: Search Fragent -->
     <string name="FromDate">Check In</string>
@@ -40,4 +41,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="createPetProfile">Please create Pet Profile.</string>
 </resources>

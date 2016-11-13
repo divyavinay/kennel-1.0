@@ -1,5 +1,9 @@
 package com.bignerdranch.android.kennel;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -26,15 +31,20 @@ public class HomeActivity extends AppCompatActivity
        {
 
            //TextViews
-           private TextView mTextViewName;
-           private TextView mTextViewEmail;
+           private static TextView mTextViewName;
+           private static TextView mTextViewEmail;
            private NetworkImageView mProfileImage;
+
+           public static String  name;
+           private static String email;
 
            //Image Loader
            private ImageLoader mImageLoader;
 
            //Floating Search button
             private Button mSearchButton;
+
+           public static final String LOGIN_DETAILS = "loginDetails";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +63,36 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+
+        SharedPreferences settings =getApplicationContext().getSharedPreferences(LOGIN_DETAILS, Context.MODE_PRIVATE);
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View hview = navigationView.getHeaderView(0);
+
+        mTextViewEmail = (TextView)hview.findViewById(R.id.EmailView);
+        mTextViewName = (TextView)hview.findViewById(R.id.Name);
+
+        if(settings.contains("display_name"))
+        {
+           name = settings.getString("display_name","test1");
+            email = settings.getString("display_email","test2");
+        }
+       mTextViewName.setText(name);
+        mTextViewEmail.setText(email);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+
+       // mProfileImage = (NetworkImageView) findViewById(R.id.profileImage);
 
     }
 
@@ -114,16 +146,21 @@ public class HomeActivity extends AppCompatActivity
             FragmentManager fm =getSupportFragmentManager();
             fm.beginTransaction().replace(R.id.content_home,petProfileFragment).commit();
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.log_out) {
+
+            SharedPreferences settings =getApplicationContext().getSharedPreferences(LOGIN_DETAILS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.clear();
+            editor.commit();
+
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-           public void OnSearch()
-           {
-
-           }
 
 }

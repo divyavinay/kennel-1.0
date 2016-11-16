@@ -146,7 +146,14 @@ public class HomeActivity extends AppCompatActivity
             FragmentManager fm =getSupportFragmentManager();
             fm.beginTransaction().replace(R.id.content_home,petProfileFragment).commit();
 
-        } else if (id == R.id.log_out) {
+        } else if (id == R.id.nav_HostProfile){
+
+            hostDetailsFragment hostDetailsFragment = new hostDetailsFragment();
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction().replace(R.id.content_home,hostDetailsFragment).commit();
+
+        }
+        else if (id == R.id.log_out) {
 
             SharedPreferences settings =getApplicationContext().getSharedPreferences(LOGIN_DETAILS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();

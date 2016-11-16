@@ -121,14 +121,8 @@ public class PetProfileFragment extends Fragment {
         String photoPath = mGalleryPhoto.getPath();
 
         if(resultCode == RESULT_OK) {
-                //Bitmap bitmap = \ImageLoader.init().from(photoPath).requestSize(512, 512).getBitmap();
-                //Bitmap bitmap = PictureUtils.getScaledBitmap(photoPath,getActivity());
+
                 mdisplayProfile.setImageURI(uri);
-//            if(bitmap == null)
-//                Log.i(TAG,"bitmap null");
-//            else
-//                mdisplayProfile.setImageBitmap(bitmap);
-//
         }
     }
 }

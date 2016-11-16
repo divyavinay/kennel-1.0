@@ -41,6 +41,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="createPetProfile">Please create Pet Profile.</string>
+
+    <!-- TODO:Host Details Fragent -->
+    <string name="personalDetails">Personal Details:</string>
+    <string name="ExperienceWithDogs">Previous experience with dogs:</string>
+    <string name="Yes">YES</string>
+    <string name="No">NO</string>
+    <string name="OwnPets">Own any pets?</string>
+    <string name="Address">Enter your address:</string>
+
 </resources>

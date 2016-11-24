@@ -50,6 +50,7 @@
     <string name="No">NO</string>
     <string name="OwnPets">Own any pets?</string>
     <string name="Address">Enter your address:</string>
+    <string name="createHost">Create Profile</string>
 
     <!-- TODO:Map Fragent -->
     <string name="fetch_address">Fetch address</string>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,9 +18,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.kosalgeek.android.photoutil.GalleryPhoto;
 import com.kosalgeek.android.photoutil.ImageLoader;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import static android.app.Activity.RESULT_OK;
@@ -43,6 +49,7 @@ public class PetProfileFragment extends Fragment {
     private String mownerName;
     public static final String TAG = "PetProfileFragment";
     private ImageView ivUpload;
+    private String photoPath;
 
     private ImageView mdisplayProfile;
 
@@ -108,8 +115,6 @@ public class PetProfileFragment extends Fragment {
 
             }
         });
-
-
      return v;
     }
 
@@ -118,11 +123,69 @@ public class PetProfileFragment extends Fragment {
 
         Uri uri = data.getData();
         mGalleryPhoto.setPhotoUri(uri);
-        String photoPath = mGalleryPhoto.getPath();
+         photoPath = mGalleryPhoto.getPath();
 
         if(resultCode == RESULT_OK) {
 
                 mdisplayProfile.setImageURI(uri);
+             uploadImageToAWS();
         }
+    }
+
+    private void uploadImageToAWS(){
+
+
+        AsyncTask<String,String,String>_Task = new AsyncTask<String, String, String>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+
+                if(android.os.Debug.isDebuggerConnected())
+                    android.os.Debug.waitForDebugger();
+                try{
+                    java.util.Date expiration = new java.util.Date();
+                    long msec = expiration.getTime();
+                    msec += 1000 * 60 * 60; // 1 hour.
+                    expiration.setTime(msec);
+                    publishProgress(params);
+
+                    String BucketName = "HostImage_dp";////////////
+                    String keyName = "image_name";
+                    String filePath = photoPath;
+
+                    AmazonS3Client s3Client1 = new AmazonS3Client( new BasicAWSCredentials( "AKIAINKUY6FRGRCGVC3Q","HW2y+pJvFrqU23WUgqlEy9radA0Wb9fMagRnDd5r") );
+//                    PutObjectRequest por = new PutObjectRequest(existingBucketName,
+//                            keyName + ".png",new File(filePath));//key is  URL
+
+                    s3Client1.createBucket(BucketName);
+
+                    PutObjectRequest por = new PutObjectRequest(BucketName,
+                           keyName ,new java.io.File(filePath));//key is  URL
+                    //making the object Public
+                    por.setCannedAcl(CannedAccessControlList.PublicRead);
+                    s3Client1.putObject(por);
+                }catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(String... values) {
+                super.onProgressUpdate(values);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+        };
     }
 }

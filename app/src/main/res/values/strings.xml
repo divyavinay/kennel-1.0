@@ -51,4 +51,12 @@
     <string name="OwnPets">Own any pets?</string>
     <string name="Address">Enter your address:</string>
 
+    <!-- TODO:Map Fragent -->
+    <string name="fetch_address">Fetch address</string>
+    <string name="address_found">Address found</string>
+    <string name="no_address_found">Sorry, no address found</string>
+    <string name="no_location_data_provided">No location data provided</string>
+    <string name="service_not_available">Sorry, the service is not available</string>
+    <string name="invalid_lat_long_used">Invalid latitude or longitude used</string>
+
 </resources>

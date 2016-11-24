@@ -22,6 +22,9 @@ import java.util.List;
 public class hostDetailsFragment extends Fragment {
 
     private Button mAddress;
+    private Double mLatitude;
+    private Double mLongitude;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,7 +37,7 @@ public class hostDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent= new Intent(getActivity(),MapActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,2);
             }
         });
 
@@ -42,6 +45,15 @@ public class hostDetailsFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-
+        if (requestCode ==2)
+        {
+                Bundle b= data.getExtras();
+                mLatitude = b.getDouble("Lat");
+                mLongitude = b.getDouble("Lng");
+        }
+    }
 }

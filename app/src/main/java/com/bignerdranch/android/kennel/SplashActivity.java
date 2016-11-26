@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 
 /**
  * Created by Divya on 10/22/2016.
+ *
+ * Splash activity is the launching Activity
  */
 
 public class SplashActivity extends AppCompatActivity{

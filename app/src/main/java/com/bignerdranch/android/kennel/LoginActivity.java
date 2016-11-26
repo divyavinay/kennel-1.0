@@ -22,6 +22,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 /**
  * Created by Divya on 10/22/2016.
+ *
+ * Contains Google sign in and Login
  */
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
@@ -44,15 +46,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private String mTextViewEmail;
     private NetworkImageView mProfileImage;
 
-    //Image Loader
-    private ImageLoader mImageLoader;
-
-    //Textview for close
-    private TextView mTextViewClose;
-
-    //TextView for Login
-    private TextView mLogin;
-
     //
     private Button mSignin;
 
@@ -66,17 +59,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
 
-        //Initializing views
-//        mTextViewName = (TextView) findViewById(R.id.textViewName);
-//        mTextViewEmail = (TextView) findViewById(R.id.textViewEmail);
-//        mProfileImage = (NetworkImageView) findViewById(R.id.profileImage);
-
-        //Initializing google sign in
         mGoogleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
-        //Initializing signbutton
         mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
         mSignInButton.setSize(SignInButton.SIZE_WIDE);
         mSignInButton.setScopes(mGoogleSignInOptions.getScopeArray());
@@ -101,15 +87,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    //setting onclick listener to signing intent
     private void signIn()
     {
-        //Creating an intent
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-
-        //starting intent for result
         startActivityForResult(signInIntent,RC_Signin);
-
     }
 
     @Override
@@ -123,7 +104,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    //after signing in we are calling this function
     private void handleSignInResult(GoogleSignInResult result)
     {
         //If the login succed
@@ -171,6 +151,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         System.exit(0);
     }
 
+    public void onSignup()
+    {
+        Intent i = new Intent(LoginActivity.this,Register_Activity.class);
+        startActivity(i);
+        finish();
+    }
     @Override
     public void onDestroy()
     {

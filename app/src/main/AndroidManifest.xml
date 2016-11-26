@@ -88,6 +88,30 @@
         </activity>
         <activity android:name=".MapActivity">
         </activity>
+
+        <activity
+            android:name=".SearchActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SearchListActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".MapActivity_Search">
+        </activity>
+
+
+
     </application>
 
 </manifest>

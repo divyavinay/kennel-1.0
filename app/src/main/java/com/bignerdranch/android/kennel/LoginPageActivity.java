@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -63,30 +64,14 @@ public class LoginPageActivity extends AppCompatActivity{
             @Override
             public void onClick(View v){
 
-//                SharedPreferences settings =getApplicationContext().getSharedPreferences(LOGIN_DETAILS, Context.MODE_PRIVATE);
-//
-//                if(!settings.contains("email"))
-//                {
-//                    SharedPreferences.Editor editor = settings.edit();
-//                    editor.putString(mTextEmail.getText().toString(), "email");
-//                    editor.putString(mTextPasswod.getText().toString(), "password");
-//                    editor.commit();
-//                    Intent intent = new Intent(LoginPageActivity.this,HomeActivity.class);
-//                    startActivity(intent);
-//                }
-//                else
-//                {
-//                    emial= settings.getString("email",null);
-//                    password = settings.getString("password",null);
-//                    mTextEmail.setText(emial);
-//                    mTextPasswod.setText(password);
-//                }
 
                 JSON_request =  " { \"userId\": \"" + mTextEmail.getText().toString() + "\",  " +
                         " \"Password\": \"" + mTextPasswod.getText().toString() + "\" }";
                 invokeFunction(JSON_request);
             }
         });
+
+     
     }
 
     private void invokeFunction(String JSON_request) {

@@ -17,16 +17,15 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.map_fragment);
+        setContentView(R.layout.activity_search);
 
         FragmentManager fm=getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.map_disp_frag);
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
         if(fragment == null){
             fragment = createFragment();
             fm.beginTransaction()
-                    .add(R.id.map_frag,fragment)
+                    .add(R.id.fragment_container,fragment)
                     .commit();
         }
     }

@@ -1,17 +1,19 @@
 package com.bignerdranch.android.kennel;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amazonaws.mobile.AWSMobileClient;
 import com.amazonaws.mobile.user.IdentityManager;
@@ -19,74 +21,117 @@ import com.amazonaws.services.lambda.model.InvocationType;
 import com.amazonaws.services.lambda.model.InvokeRequest;
 import com.amazonaws.services.lambda.model.InvokeResult;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-
+import java.util.List;
 
 /**
- * Created by Divya on 10/23/2016.
- * New User sign up page
+ * Created by Divya on 11/25/2016.
  */
 
-public class Register_Activity extends AppCompatActivity{
+public class SearchListFragment extends Fragment {
 
-
-    private String mFirst_name;
-    private static final String EXTRA_FIRST_NAME = "com.bignerdranch.android.kennel.first_name";
-    private static String first_name,JSON_request ;
-    private static String last_name;
-    private static String email;
-    private static String password;
-    private TextView mEmail;
-    private TextView mPassword;
+    private RecyclerView mSearchRecyclerView;
+    private SearchAdapter mAdapter;
+    private static String JSON_request ;
     private IdentityManager identityManager;
-    private TextView mtest;
-    private String userId;
-
-    private FloatingActionButton mSignUp;
+    String firstName ;
+    String lastName;
 
     @Override
-    public void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-        setContentView(R.layout.activity_register);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
 
-        AWSMobileClient.initializeMobileClientIfNecessary(this);
+        View view = inflater.inflate(R.layout.fragment_search_list,container,false);
+
+        AWSMobileClient.initializeMobileClientIfNecessary(getActivity());
         final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
         identityManager = awsMobileClient.getIdentityManager();
 
-        mtest =(TextView)findViewById(R.id.test);
+        mSearchRecyclerView =(RecyclerView) view.findViewById(R.id.search_recycler_view);
+        mSearchRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+
+        //UpdateUI();
+
+        JSON_request =  " { \"city\": \"" + "Fremont" + "\" }";
+        invokeFunction(JSON_request);
+
+        return view;
     }
-    public void onLogin(View v)
-    {
-        mEmail =(TextView) findViewById(R.id.input_email);
-        mPassword = (TextView) findViewById(R.id.input_password);
-        email = mEmail.getText().toString();
-        password = mPassword.getText().toString();
-        userId = first_name + last_name;
 
-    Intent i = new Intent(Register_Activity.this,HomeActivity.class);
-    JSON_request =  " { \"userId\": \"" + userId + "\", \"Email\": \"" + email + "\",  \"Password\": \"" + password + "\",   \"First_Name\": \"" + first_name + "\", \"Last_Name\": \"" + last_name + "\" }";
-    invokeFunction(JSON_request);
-    startActivity(i);
-    finish();
+    private void UpdateUI() {
 
 
-}
 
-    public static Intent newIntent(Context packageContext, Bundle details)
-    {
-        Intent i= new Intent(packageContext, Register_Activity.class);
-        i.putExtras(details);
-        if (details != null) {
-            first_name = details.getString("first_name");
-            last_name = details.getString("last_name");
+
+        SearchLab searchLab =SearchLab.get(getActivity());
+        List<Search> searches = searchLab.getSearches();
+
+        mAdapter = new SearchAdapter(searches);
+        mSearchRecyclerView.setAdapter(mAdapter);
+    }
+
+    private class SearchHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private Search mSearch;
+
+        public TextView mFirstName;
+        public TextView mLastName;
+
+        public void bindSearch(Search search)
+        {
+            mSearch =search;
+            mFirstName.setText(mSearch.getFirstname());
+            mLastName.setText(mSearch.getLastName());
+
         }
-        return i;
+
+        public SearchHolder (View itemView){
+            super(itemView);
+            itemView.setOnClickListener(this);
+
+            mFirstName = (TextView) itemView.findViewById(R.id.list_item_firstname);
+            mLastName = (TextView)itemView.findViewById(R.id.list_item_lastname);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = SearchActivity.newIntent(getActivity(),mSearch.getId());
+            startActivity(intent);
+        }
+    }
+
+    private class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
+        private List<Search> mSearches;
+
+        public SearchAdapter (List<Search> searches){
+            mSearches = searches;
+        }
+
+        @Override
+        public SearchHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.list_item_search,parent,false);
+            return new SearchHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(SearchHolder holder, int position) {
+            Search search = mSearches.get(position);
+          holder.bindSearch(search);
+        }
+
+
+
+        @Override
+        public int getItemCount() {
+            return mSearches.size();
+        }
     }
 
     private void invokeFunction(String JSON_request) {
@@ -95,7 +140,7 @@ public class Register_Activity extends AppCompatActivity{
         final CharsetEncoder ENCODER = CHARSET_UTF8.newEncoder();
         final CharsetDecoder DECODER = CHARSET_UTF8.newDecoder();
 
-        final String functionName = "newUser";
+        final String functionName = "getSearchLocations-itemsHandler-mobilehub-1555515748";
         final String requestPayLoad = JSON_request;
 
         AsyncTask<Void, Void, InvokeResult> myTask = new AsyncTask<Void, Void, InvokeResult>() {
@@ -139,7 +184,24 @@ public class Register_Activity extends AppCompatActivity{
                     } else {
                         final ByteBuffer resultPayloadBuffer = invokeResult.getPayload();
                         final String resultPayload = DECODER.decode(resultPayloadBuffer).toString();
-                        mtest.setText(resultPayload);
+
+                        JSONObject reader = new JSONObject(resultPayload);
+                        String body = reader.getString("body");
+                        JSONObject bodyObj= new JSONObject(body);
+                        JSONObject hosts = bodyObj.getJSONObject("hosts");
+                        JSONArray items = hosts.getJSONArray("Items");
+                        for(int i=0;i<items.length();i++)
+                        {
+                            JSONObject jsonObject = items.getJSONObject(i);
+                            firstName = jsonObject.getString("First_Name");
+                            lastName = jsonObject.getString("Last_Name");
+                            Search search = new Search();
+                            SearchLab.get(getActivity()).addSearch(search);
+                            UpdateUI();
+//                            search.setFirstname(firstName);
+//                            search.setLastName(lastName);
+                        }
+
                     }
 
                     if (functionError != null) {
@@ -162,13 +224,14 @@ public class Register_Activity extends AppCompatActivity{
             myTask.execute();
     }
 
-
-
     public void showError(final String errorMessage) {
-        new AlertDialog.Builder(getApplication())
+        new AlertDialog.Builder(getActivity())
                 .setTitle("Error AWS Backend Contact")
                 .setMessage(errorMessage)
                 .setNegativeButton("Dissmiss", null)
                 .create().show();
     }
+
 }
+
+

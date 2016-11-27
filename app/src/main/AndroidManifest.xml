@@ -100,7 +100,8 @@
         </activity>
         <activity android:name=".MapActivity_Search">
         </activity>
-
+        <activity android:name=".HostDetailsActivity">
+        </activity>
 
 
     </application>

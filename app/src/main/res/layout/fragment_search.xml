@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/personalDetails"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -32,7 +32,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/FirstName"
-                    />
+                    android:paddingRight="20dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -50,7 +51,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/LastName"
-                    />
+                    android:paddingRight="20dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -71,35 +73,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/Details"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:paddingBottom="20dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/db_details"/>
+                android:id="@+id/list_details"/>
 
         </LinearLayout>
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/Address"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/db_address"/>
-
-        </LinearLayout>
 
 
     </LinearLayout>

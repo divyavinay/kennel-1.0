@@ -2,6 +2,8 @@ package com.bignerdranch.android.kennel;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -17,9 +19,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobile.AWSMobileClient;
@@ -37,6 +42,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -51,28 +57,34 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Divya on 11/25/2016.
  */
 
 public class SearchListActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks {
+        GoogleApiClient.ConnectionCallbacks{
 
     private RecyclerView mSearchRecyclerView;
     private static String JSON_request ;
     private IdentityManager identityManager;
     String firstName ;
     String lastName;
+    String Details;
 
     private static final String TAG_ID = "id";
-    private static final String TAG_FIRSTNAME = "name";
-    private static final String TAG_LASTNAME="address";
+    private static final String TAG_FIRSTNAME = "firstName";
+    private static final String TAG_LASTNAME="lastName";
+    private static final String TAG_DETAILS="details";
+    private static final String ID_EXTRA="com.bignerdranch.android.kennel._ID";
+
     private GoogleApiClient mGoogleApiClient;
     GoogleMap mGoogleMap;
     private static final int REQUEST_LOCATION = 0;
     private double lat;
     private double lng;
+    private String city;
 
 
     ListView mListView;
@@ -90,7 +102,9 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
         personList = new ArrayList<HashMap<String,String>>();
         mListView = (ListView) findViewById(R.id.listView);
 
-        JSON_request =  " { \"city\": \"" + "Fremont" + "\" }";
+        city = getIntent().getStringExtra(MapActivity_Search.CITY_EXTRA);
+
+        JSON_request =  " { \"city\": \"" + city + "\" }";
         invokeFunction(JSON_request);
 
 
@@ -120,10 +134,6 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
 
     }
 
-    private void UpdateUI() {
-
-
-    }
 
 
     private void invokeFunction(String JSON_request) {
@@ -188,22 +198,47 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
                             JSONObject jsonObject = items.getJSONObject(i);
                             firstName = jsonObject.getString("First_Name");
                             lastName = jsonObject.getString("Last_Name");
+                            Details = jsonObject.getString("Details");
+
+                            lat = jsonObject.getDouble("Latitude");
+                            lng = jsonObject.getDouble("Longitude");
+                            goToLocation(lat,lng);
 
                             HashMap<String,String> persons = new HashMap<String,String>();
 
                             persons.put(TAG_FIRSTNAME,firstName);
                             persons.put(TAG_LASTNAME,lastName);
+                            persons.put(TAG_DETAILS,Details);
 
                             personList.add(persons);
                         }
                         ListAdapter adapter = new SimpleAdapter(
                                 getApplicationContext(), personList, R.layout.list_item_search,
-                                new String[]{TAG_FIRSTNAME,TAG_LASTNAME},
-                                new int[]{ R.id.list_item_firstname, R.id.list_item_lastname}
+                                new String[] {TAG_FIRSTNAME,TAG_LASTNAME,TAG_DETAILS},
+                                new int[]{ R.id.list_item_firstname, R.id.list_item_lastname,R.id.list_details}
                         );
 
-                        mListView.setAdapter(adapter);
+                     mListView.setAdapter(adapter);
+                        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                                Bundle bundle = new Bundle();
+                                Object o = parent.getAdapter().getItem(position);
+                                HashMap<String, Object> obj = (HashMap<String, Object>) parent.getAdapter().getItem(position);
+                                String firstName_obj = (String) obj.get("firstName");
+                                String Lastname_obj = (String) obj.get("lastName");
+                               String Details_obj = (String) obj.get("details");
+
+                                bundle.putString("firstName",firstName_obj);
+                                bundle.putString("lastName",Lastname_obj);
+                                bundle.putString("details",Details_obj);
+
+                                Intent i = new Intent(SearchListActivity.this,HostDetailsActivity.class);
+                                i.putExtras(bundle);
+                                startActivity(i);
+                            }
+                        });
                     }
 
                     if (functionError != null) {
@@ -259,7 +294,7 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
         MarkerOptions itemMarker = new MarkerOptions()
                 .position(latLng);
 
-        mGoogleMap.clear();
+        //mGoogleMap.clear();
         mGoogleMap.addMarker(itemMarker);
 
         int margin = getResources().getDimensionPixelSize(R.dimen.map_insert_margin);
@@ -298,7 +333,11 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             lat = location.getLatitude();
             lng = location.getLongitude();
-            goToLocation(lat,lng);
+
+            LatLng latLng_current = new LatLng(lat,lng);
+
+            mGoogleMap.setMyLocationEnabled(true);
+           // goToLocation(lat,lng);
         }
     }
 
@@ -311,5 +350,7 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
 }
 

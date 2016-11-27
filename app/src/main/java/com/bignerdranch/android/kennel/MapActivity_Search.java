@@ -46,6 +46,8 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
     private double lat;
     private double lng;
     private static final int REQUEST_LOCATION = 0;
+    String city;
+    public static final String CITY_EXTRA="com.bignerdranch.android.kennel.city";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +71,13 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
             @Override
             public void onClick(View v) {
 
-                Bundle Location_cor = new Bundle();
-                Location_cor.putDouble("Latitude",lat);
-                Location_cor.putDouble("Longitude",lng);
+                try {
+                    geolocate(v);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Intent intent = new Intent(getApplicationContext(),SearchListActivity.class);
-                intent.putExtras(Location_cor);
+                intent.putExtra(CITY_EXTRA,city);
                 startActivity(intent);
                 finish();
             }
@@ -137,6 +141,7 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
 
         lat = add.getLatitude();
         lng = add.getLongitude();
+         city = add.getLocality();
 
         goToLocation(lat, lng);
     }

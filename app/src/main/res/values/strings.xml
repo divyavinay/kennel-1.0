@@ -62,6 +62,9 @@
 
     <!-- TODO:Search Fragent -->
     <string name="Details">Details about host:</string>
+    <string name="From_date">From date</string>
+    <string name="To_date">To Date</string>
+
 
 
 </resources>

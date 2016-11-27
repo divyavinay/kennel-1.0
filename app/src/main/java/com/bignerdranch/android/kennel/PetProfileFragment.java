@@ -1,5 +1,6 @@
 package com.bignerdranch.android.kennel;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,8 +27,13 @@ import android.widget.ImageView;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.mobile.AWSMobileClient;
+import com.amazonaws.mobile.user.IdentityManager;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
+import com.amazonaws.services.lambda.model.InvocationType;
+import com.amazonaws.services.lambda.model.InvokeRequest;
+import com.amazonaws.services.lambda.model.InvokeResult;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -41,67 +47,52 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
 public class PetProfileFragment extends Fragment {
 
-    private CheckBox msmall;
-    private CheckBox mmedium;
-    private CheckBox mlarge;
-    private EditText mpetDetails;
-    private EditText mpetName;
     private static String JSON_request;
-    private Button mSave;
-    private String petName;
-    private Integer petType;
-    private String Details;
-    private String mownerName;
     private ImageView ivUpload;
-    private String photoPath;
     private ImageView mdisplayProfile;
     private ProgressDialog pd;
     private GalleryPhoto mGalleryPhoto;
-    public static final String LOGIN_DETAILS = "loginDetails";
-    public static final String BUCKET_NAME = "kennel-deployments-mobilehub-1555515748/HostImage";
-    public static final String ACCESS_KEY = "AKIAINKUY6FRGRCGVC3Q";
-    public static final String SECRET_KEY = "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";
+    public static final String USER_ID = "userId";
+    public static final String BUCKET_NAME = "";
+    public static final String ACCESS_KEY = "";
+    public static final String SECRET_KEY = "";
     private final int GALLERY_REQUEST = 0;
-
-    public PetProfileFragment() {
-    }
+    private IdentityManager identityManager;
+    private String ImageURL;
+    private EditText mPetName;
+    private EditText mDetails;
+    private Button mSave;
+    private CheckBox mSmall;
+    private CheckBox mMedium;
+    private CheckBox mLarge;
+    private int mpetType;
+    private String mpetOwner;
+    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        AWSMobileClient.initializeMobileClientIfNecessary(getActivity());
+        final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
+        identityManager = awsMobileClient.getIdentityManager();
+
         // Inflate the layout for this fragment
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Uploading");
         View v = inflater.inflate(R.layout.fragment_pet_profile, container, false);
-        final SharedPreferences settings = getContext().getSharedPreferences(LOGIN_DETAILS, Context.MODE_PRIVATE);
-        mSave = (Button) v.findViewById(R.id.SaveProfile);
-        mSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mpetName = (EditText) v.findViewById(R.id.PetName);
-                mpetDetails = (EditText) v.findViewById(R.id.About);
-                msmall = (CheckBox) v.findViewById(R.id.DogSize1);
-                mmedium = (CheckBox) v.findViewById(R.id.DogSize2);
-                mlarge = (CheckBox) v.findViewById(R.id.DogSize3);
-                if (settings.contains("display_name")) {
-                    mownerName = settings.getString("display_name", null);
-                }
-
-                if (msmall.isChecked()) {
-                    petType = 1;
-                } else if (mmedium.isChecked()) {
-                    petType = 2;
-                } else {
-                    petType = 3;
-                }
-            }
-        });
+        final SharedPreferences settings = getContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE);
+       userId= settings.getString("userId",null);
 
         ivUpload = (ImageView) v.findViewById(R.id.profileImage);
 
@@ -113,6 +104,45 @@ public class PetProfileFragment extends Fragment {
             public void onClick(View v) {
                 Intent in = mGalleryPhoto.openGalleryIntent();
                 startActivityForResult(in, GALLERY_REQUEST);
+            }
+        });
+
+        mPetName = (EditText)v.findViewById(R.id.PetName);
+        mDetails =(EditText)v.findViewById(R.id.About);
+        mLarge=(CheckBox)v.findViewById(R.id.DogSize3);
+        mMedium=(CheckBox)v.findViewById(R.id.DogSize2);
+        mSmall = (CheckBox)v.findViewById(R.id.DogSize1);
+
+        if(mSmall.isChecked()==true)
+        {
+            mpetType=1;
+        }
+        else if(mMedium.isChecked()==true)
+        {
+            mpetType = 2;
+        }
+        else if(mLarge.isChecked()==true)
+        {
+            mpetType=3;
+        }
+
+        mpetOwner = settings.getString("display_name",null);
+
+
+        mSave=(Button)v.findViewById(R.id.SaveProfile);
+        mSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                JSON_request =  " { \"userId\": \"" + userId + "\", " +
+                        "\"OwnerName\": \"" + mpetOwner + "\", " +
+                        " \"PetName\": \"" + mPetName.getText().toString() + "\",  " +
+                        " \"PetSize\": \"" + mpetType + "\",  " +
+                        " \"Details\": \"" + mDetails.getText().toString() + "\",  " +
+                        "\"ImageURL\": \"" + ImageURL + "\" }";
+
+                invokeFunction(JSON_request);
+
             }
         });
         return v;
@@ -151,6 +181,7 @@ public class PetProfileFragment extends Fragment {
             por.setCannedAcl(CannedAccessControlList.PublicReadWrite);
             s3Client.putObject(por);
             URL url = getUrlForDataBaseInsert(s3Client, file);
+            ImageURL = url.toString();
         } catch (Exception e) {
             Log.e("ERROR",e.getMessage());
         }
@@ -172,4 +203,88 @@ public class PetProfileFragment extends Fragment {
         }
         return null;
     }
+
+    private void invokeFunction(String JSON_request) {
+
+        final Charset CHARSET_UTF8 = Charset.forName("UTF-8");
+        final CharsetEncoder ENCODER = CHARSET_UTF8.newEncoder();
+        final CharsetDecoder DECODER = CHARSET_UTF8.newDecoder();
+
+        final String functionName = "insertPetDetails";
+        final String requestPayLoad = JSON_request;
+
+        AsyncTask<Void, Void, InvokeResult> myTask = new AsyncTask<Void, Void, InvokeResult>() {
+            @Override
+            protected InvokeResult doInBackground(Void... params) {
+                try {
+                    final ByteBuffer payload =
+                            ENCODER.encode(CharBuffer.wrap(requestPayLoad));
+
+                    final InvokeRequest invokeRequest =
+                            new InvokeRequest()
+                                    .withFunctionName(functionName)
+                                    .withInvocationType(InvocationType.RequestResponse)
+                                    .withPayload(payload);
+
+                    final InvokeResult invokeResult =
+                            AWSMobileClient
+                                    .defaultMobileClient()
+                                    .getCloudFunctionClient()
+                                    .invoke(invokeRequest);
+
+                    return invokeResult;
+                } catch (final Exception e) {
+                    Log.e("AWSLAMBDA:", "AWS Lambda invocation failed : " + e.getMessage(), e);
+                    final InvokeResult result = new InvokeResult();
+                    result.setStatusCode(500);
+                    result.setFunctionError(e.getMessage());
+                    return result;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(final InvokeResult invokeResult) {
+                try {
+                    final int statusCode = invokeResult.getStatusCode();
+                    final String functionError = invokeResult.getFunctionError();
+                    final String logResult = invokeResult.getLogResult();
+
+                    if (statusCode != 200) {
+                        showError(invokeResult.getFunctionError());
+                    } else {
+                        final ByteBuffer resultPayloadBuffer = invokeResult.getPayload();
+                        final String resultPayload = DECODER.decode(resultPayloadBuffer).toString();
+
+                    }
+
+                    if (functionError != null) {
+                        Log.e("AWSLAMBDA", "AWS Lambda Function Error: " + functionError);
+                    }
+
+                    if (logResult != null) {
+                        Log.d("AWSLAMBDA", "AWS Lambda Log Result: " + logResult);
+                    }
+                } catch (final Exception e) {
+                    Log.e("AWSLAMBDA", "Unable to decode results. " + e.getMessage(), e);
+                    showError(e.getMessage());
+                }
+            }
+        };
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            myTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        else
+            myTask.execute();
+    }
+
+
+
+    public void showError(final String errorMessage) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Error AWS Backend Contact")
+                .setMessage(errorMessage)
+                .setNegativeButton("Dissmiss", null)
+                .create().show();
+    }
+
 }

@@ -1,7 +1,9 @@
 package com.bignerdranch.android.kennel;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +48,7 @@ public class LoginPageActivity extends AppCompatActivity{
     private static String emial;
     private static String password;
     private IdentityManager identityManager;
+    public static final String USER_ID = "userId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,12 +134,18 @@ public class LoginPageActivity extends AppCompatActivity{
                         JSONObject reader = new JSONObject(resultPayload);
 
                         JSONObject body = reader.getJSONObject("body");
+                        String userId = body.getString("userId");
                         verify = body.getString("verificationPassed");
 
 
 
-                        if(verify == "Verified")
+                        if(verify.equals("Verified"))
                         {
+
+                            SharedPreferences settings =getApplicationContext().getSharedPreferences(USER_ID, Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor= settings.edit();
+                            editor.putString("userId",userId);
+                            editor.commit();
                             Intent intent = new Intent(LoginPageActivity.this,HomeActivity.class);
                            startActivity(intent);
                             finish();

@@ -65,6 +65,11 @@
     <string name="From_date">From date</string>
     <string name="To_date">To Date</string>
 
+    <!-- TODO:HostDetails -->
+    <string name="Booking_details">Booking Details:</string>
+    <string name="Book">Confirm Booking</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-2298298234229156/5816850620</string>
 
 
 </resources>

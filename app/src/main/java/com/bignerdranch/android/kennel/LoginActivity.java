@@ -12,6 +12,9 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -85,6 +88,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-2298298234229156/5816850620");
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+
+//        AdRequest request = new AdRequest.Builder()
+//         .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+//         .build();
+
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)        // All emulators
+                .addTestDevice("007D7DBAA783E10991CDC78D9B9852AD")  // An example device ID
+                .build();
+
+        mAdView.loadAd(request);
     }
 
     private void signIn()

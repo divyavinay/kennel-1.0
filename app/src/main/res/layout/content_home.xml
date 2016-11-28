@@ -14,4 +14,11 @@
     tools:context="com.bignerdranch.android.kennel.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/host_list_view"
+        android:paddingTop="40dp"/>
+
+
 </RelativeLayout>

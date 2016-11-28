@@ -1,7 +1,11 @@
 package com.bignerdranch.android.kennel;
 
+import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,9 +14,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,6 +37,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,13 +48,25 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
     private Button mGo;
     private GoogleApiClient mGoogleApiClient;
     protected static final String TAG = "main-activity";
-    private Button mSave;
+    private Button mFrom_date;
+    private Button mTo_date;
     private Location mCurrentLocation;
     private double lat;
     private double lng;
     private static final int REQUEST_LOCATION = 0;
     String city;
     public static final String CITY_EXTRA="com.bignerdranch.android.kennel.city";
+    private int REQUEST_FROM_DATE=0;
+    private int REQUEST_TO_DATE= 1;
+    private String fromDate;
+    private String toDate;
+    private DatePicker datePicker;
+    private Calendar calendar;
+    private int year_x, month_x, day_x;
+    private static final int DIALOG_ID_FROM = 0;
+    private static final int DIALOG_ID_TO=1;
+    public static final String BOOKING_DATES = "booking_dates";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +74,13 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
         setContentView(R.layout.activity_map_search);
 
         if (GoogleServiceAvailable()) {
-            Toast.makeText(this, "Connected to play services", Toast.LENGTH_SHORT).show();
             initMap();
         }
+
+        Calendar c =Calendar.getInstance();
+        year_x = c.get(Calendar.YEAR);
+        month_x = c.get(Calendar.MONTH) + 1;
+        day_x=c.get(Calendar.DAY_OF_MONTH);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -80,6 +103,28 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
                 intent.putExtra(CITY_EXTRA,city);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        mFrom_date=(Button)findViewById(R.id.rev_fromDate);
+        mFrom_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showDialogOnButtonClick_from_date();
+
+            }
+        });
+
+
+
+        mTo_date=(Button)findViewById(R.id.rev_ToDate);
+        mTo_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showDialogOnButtonClick_to();
+
             }
         });
 
@@ -141,7 +186,7 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
 
         lat = add.getLatitude();
         lng = add.getLongitude();
-         city = add.getLocality();
+        city = add.getLocality();
 
         goToLocation(lat, lng);
     }
@@ -162,7 +207,6 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Toast.makeText(this, "Connect", Toast.LENGTH_SHORT).show();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                     this,
@@ -191,6 +235,61 @@ public class MapActivity_Search extends AppCompatActivity implements GoogleApiCl
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+    public void showDialogOnButtonClick_from_date()
+    {
+        showDialog(DIALOG_ID_FROM);
+    }
+
+    public void showDialogOnButtonClick_to()
+    {
+        showDialog(DIALOG_ID_TO);
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+
+        if(id == DIALOG_ID_FROM)
+           return new DatePickerDialog(this,dpickerListner,year_x,month_x,day_x);
+
+        else if (id == DIALOG_ID_TO)
+            return new DatePickerDialog(this,dpickerListner_to,year_x,month_x,day_x);
+        else
+            return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener dpickerListner
+            = new DatePickerDialog.OnDateSetListener(){
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    year_x = year;
+                    month_x = month;
+                    day_x = dayOfMonth;
+            fromDate = day_x +"/" + month_x +"/" + year_x;
+            SharedPreferences settings =getApplicationContext().getSharedPreferences(BOOKING_DATES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor= settings.edit();
+            editor.putString("from_date",fromDate);
+            editor.commit();
+
+        }
+    };
+
+    private DatePickerDialog.OnDateSetListener dpickerListner_to
+            = new DatePickerDialog.OnDateSetListener(){
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            year_x = year;
+            month_x = month;
+            day_x = dayOfMonth;
+            toDate = day_x +"/"+month_x+"/"+year_x;
+            SharedPreferences settings =getApplicationContext().getSharedPreferences(BOOKING_DATES, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor= settings.edit();
+            editor.putString("to_date",toDate);
+            editor.commit();
+        }
+    };
 }
 
 

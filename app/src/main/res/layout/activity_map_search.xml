@@ -16,6 +16,33 @@
         android:hint="Enter Address"
         android:ems="10"
         android:id="@+id/address"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/From_date"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rev_fromDate"
+            android:text="@string/From_date"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/To_date"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rev_ToDate"
+            android:text="@string/To_date"/>
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,8 +57,6 @@
             android:layout_weight="1"
             android:layout_gravity="center"
             android:text="Go"/>
-
-
 
     </LinearLayout>
 

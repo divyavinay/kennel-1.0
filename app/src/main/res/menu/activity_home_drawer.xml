@@ -6,13 +6,9 @@
             android:id="@+id/nav_Home"
             android:icon="@drawable/ic_action_name"
             android:title="Home"/>
-        <item
-            android:id="@+id/nav_Trips"
-            android:icon="@drawable/ic_trips"
-            android:title="Trips"/>
+
         <item
             android:id="@+id/nav_PetProfile"
-            android:icon="@mipmap/ic_pet_launcher"
             android:title="Pet Profile"/>
 
         <item

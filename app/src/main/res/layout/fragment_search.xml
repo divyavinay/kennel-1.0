@@ -9,18 +9,68 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/host_userid"
+            android:visibility="invisible"/>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Booking_details"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.PopupMenu.Small"
+                android:paddingBottom="20dp"
+                android:paddingTop="10dp"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/From_date"
+                    android:paddingRight="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bookin_from_textView"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/To_date"
+                    android:paddingRight="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bookin_to_textView"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/personalDetails"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -33,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/FirstName"
                     android:paddingRight="20dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.PopupMenu.Small"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -52,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/LastName"
                     android:paddingRight="20dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.PopupMenu.Small"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -73,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/Details"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small"
                 android:paddingBottom="20dp"/>
 
             <TextView
@@ -83,9 +133,13 @@
 
         </LinearLayout>
 
-
-
-
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/Book"
+        android:id="@+id/confirm_btn"/>
 
 </LinearLayout>

@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
@@ -64,9 +65,9 @@ public class PetProfileFragment extends Fragment {
     private ProgressDialog pd;
     private GalleryPhoto mGalleryPhoto;
     public static final String USER_ID = "userId";
-    public static final String BUCKET_NAME = "";
-    public static final String ACCESS_KEY = "";
-    public static final String SECRET_KEY = "";
+    public static final String BUCKET_NAME = "kennel-deployments-mobilehub-1555515748/HostImage";
+    public static final String ACCESS_KEY = "AKIAINKUY6FRGRCGVC3Q";
+    public static final String SECRET_KEY = "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";
     private final int GALLERY_REQUEST = 0;
     private IdentityManager identityManager;
     private String ImageURL;
@@ -193,7 +194,7 @@ public class PetProfileFragment extends Fragment {
             ResponseHeaderOverrides override = new ResponseHeaderOverrides();
             override.setContentType("image/jpeg" );
             GeneratePresignedUrlRequest urlRequest = new GeneratePresignedUrlRequest(BUCKET_NAME, file.getName() );
-            urlRequest.setExpiration( new Date( System.currentTimeMillis() + 3600000 ) );
+            urlRequest.setExpiration( new Date( System.currentTimeMillis() + 600000000 ) );
             urlRequest.setResponseHeaders( override );
             URL url = s3Client1.generatePresignedUrl( urlRequest );
             return url;
@@ -254,6 +255,8 @@ public class PetProfileFragment extends Fragment {
                     } else {
                         final ByteBuffer resultPayloadBuffer = invokeResult.getPayload();
                         final String resultPayload = DECODER.decode(resultPayloadBuffer).toString();
+
+                        Toast.makeText(getActivity(),"Created succesfully",Toast.LENGTH_SHORT).show();
 
                     }
 

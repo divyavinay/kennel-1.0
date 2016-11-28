@@ -60,6 +60,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
     private double lat;
     private double lng;
     private static final int REQUEST_LOCATION = 0;
+    private String city;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,14 +100,13 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
                 Bundle bundle = new Bundle();
                 bundle.putDouble("Lat", lat);
                 bundle.putDouble("Lng", lng);
+                bundle.putString("city",city);
                 Intent i = new Intent();
                 i.putExtras(bundle);
                 setResult(2, i);
                 finish();
-
             }
         });
-
 
     }
 
@@ -166,6 +166,8 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
 
         lat = add.getLatitude();
         lng = add.getLongitude();
+        city = add.getLocality();
+
         goToLocation(lat, lng);
     }
 
@@ -201,6 +203,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
              lat = location.getLatitude();
              lng = location.getLongitude();
+
             goToLocation(lat,lng);
         }
     }

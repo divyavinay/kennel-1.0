@@ -74,48 +74,6 @@
                     android:id="@+id/DogSize3"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="40dp">
-
-                <RadioButton
-                    android:text="@string/Alpha"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Alpha"/>
-
-                <RadioButton
-                    android:text="@string/PottyTrained"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/PottyTrained"/>
-
-                <RadioButton
-                    android:text="@string/OtherDogs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/OtherDogs"/>
-
-                <RadioButton
-                    android:text="@string/Active"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Active"/>
-
-                <RadioButton
-                    android:text="@string/NotActive"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/NotActive"/>
-
-                <RadioButton
-                    android:text="@string/Kids"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Kids"/>
-            </LinearLayout>
 
             <EditText
                 android:layout_width="346dp"

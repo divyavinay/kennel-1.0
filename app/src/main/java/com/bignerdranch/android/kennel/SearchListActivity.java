@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -72,11 +73,12 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
     String firstName ;
     String lastName;
     String Details;
-
+    private String host_userId;
     private static final String TAG_ID = "id";
     private static final String TAG_FIRSTNAME = "firstName";
     private static final String TAG_LASTNAME="lastName";
     private static final String TAG_DETAILS="details";
+    private static final String TAG_HOST_USERID="host_userId";
     private static final String ID_EXTRA="com.bignerdranch.android.kennel._ID";
 
     private GoogleApiClient mGoogleApiClient;
@@ -84,6 +86,7 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
     private static final int REQUEST_LOCATION = 0;
     private double lat;
     private double lng;
+
     private String city;
 
 
@@ -101,6 +104,8 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
 
         personList = new ArrayList<HashMap<String,String>>();
         mListView = (ListView) findViewById(R.id.listView);
+
+
 
         city = getIntent().getStringExtra(MapActivity_Search.CITY_EXTRA);
 
@@ -199,6 +204,8 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
                             firstName = jsonObject.getString("First_Name");
                             lastName = jsonObject.getString("Last_Name");
                             Details = jsonObject.getString("Details");
+                            host_userId=jsonObject.getString("userId");
+
 
                             lat = jsonObject.getDouble("Latitude");
                             lng = jsonObject.getDouble("Longitude");
@@ -209,16 +216,17 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
                             persons.put(TAG_FIRSTNAME,firstName);
                             persons.put(TAG_LASTNAME,lastName);
                             persons.put(TAG_DETAILS,Details);
+                            persons.put(TAG_HOST_USERID,host_userId);
 
                             personList.add(persons);
                         }
                         ListAdapter adapter = new SimpleAdapter(
-                                getApplicationContext(), personList, R.layout.list_item_search,
-                                new String[] {TAG_FIRSTNAME,TAG_LASTNAME,TAG_DETAILS},
-                                new int[]{ R.id.list_item_firstname, R.id.list_item_lastname,R.id.list_details}
+                                getApplicationContext(), personList, R.layout.home_host_list_view,
+                                new String[] {TAG_FIRSTNAME,TAG_LASTNAME,TAG_DETAILS,TAG_HOST_USERID},
+                                new int[]{ R.id.list_item_firstname, R.id.list_item_lastname,R.id.list_details,R.id.host_userid}
                         );
 
-                     mListView.setAdapter(adapter);
+                         mListView.setAdapter(adapter);
                         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -228,11 +236,13 @@ public class SearchListActivity extends AppCompatActivity implements GoogleApiCl
                                 HashMap<String, Object> obj = (HashMap<String, Object>) parent.getAdapter().getItem(position);
                                 String firstName_obj = (String) obj.get("firstName");
                                 String Lastname_obj = (String) obj.get("lastName");
-                               String Details_obj = (String) obj.get("details");
+                                String Details_obj = (String) obj.get("details");
+                                String host_userID_obj=(String)obj.get("host_userId");
 
                                 bundle.putString("firstName",firstName_obj);
                                 bundle.putString("lastName",Lastname_obj);
                                 bundle.putString("details",Details_obj);
+                                bundle.putString("host_userId",host_userID_obj);
 
                                 Intent i = new Intent(SearchListActivity.this,HostDetailsActivity.class);
                                 i.putExtras(bundle);
